@@ -2,10 +2,10 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: blue; icon-glyph: grip-horizontal;
 // ? Comment out modules you don't want to use
-const battery = importModule('_Widget Battery')
+// const battery = importModule('_Widget Battery')
 const calendar = importModule('_Widget Calendar')
-const todoist = importModule('_Widget todoist')
-const weather = importModule('_Widget Weather')
+// const todoist = importModule('_Widget todoist')
+const weather = importModule('_Widget Weather')// 
 const mail = importModule('_Widget mail')
 const notion = importModule('_Widget notion')
 // const bgImage = importModule('_Widget bgImage')
@@ -16,7 +16,8 @@ const SIZE = {
   lg: 50
 }
 const COLOR = {
-  grey: "#bbbbbb"
+  grey: "#bbbbbb",
+  bgGrey: "#1e1e1e"
 }
 function truncateString(str, num) {
   if (str.length <= num) {
@@ -69,7 +70,8 @@ async function createWidget() {
   // const path = files.joinPath(files.documentsDirectory(), filename)
   let fm = FileManager.iCloud()
   let image = fm.readImage(fm.documentsDirectory() + "/image.jpg")
-  widget.backgroundImage = image
+//   widget.backgroundImage = image
+widget.backgroundColor = new Color(COLOR.bgGrey)
 
   // END Background 🖼️ image --------------//
 

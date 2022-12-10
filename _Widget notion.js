@@ -11,8 +11,9 @@ module.exports = async () => {
     filter: {
       and: [
         { property: "Tags", multi_select: { contains: "🛠️ Create" } },
-        { property: "Status", select: { does_not_equal: "✅ Done" } }
-      ]
+        { property: "Status", select: { does_not_equal: "✅ Done" } },
+      { property: "Status", select: { does_not_equal: "🕥Someday" } }
+]
     }
   }
 

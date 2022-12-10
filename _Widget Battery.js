@@ -1,5 +1,8 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
+// icon-color: deep-gray; icon-glyph: magic;
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
 // icon-color: cyan; icon-glyph: battery-three-quarters;
 module.exports = () => {
   const percentage = Math.round(Device.batteryLevel() * 100)

@@ -4,12 +4,14 @@
 // const battery = importModule('_Widget Battery')
 const SIZE = {
   sm: 10,
-  md: 16,
+  md: 12,
   lg: 50
 }
 const COLOR = {
-  grey: "#bbbbbb"
+  grey: "#bbb",
+  light: "#fff",
 }
+let fm = FileManager.iCloud()
 
 //--------------------------------//
 // Setup widget 
@@ -41,80 +43,93 @@ async function createWidget() {
       widget.backgroundImage = fm.readImage(path)
     }
   }
-  //   let fm = FileManager.iCloud()
-  //   let path = ''
-  //   if (fm.bookmarkExists("image.jpg")) {
-  //     path = fm.bookmarkedPath("image.jpg")
-  //     widget.backgroundImage = fm.readImage(path);
-  //   }
-  //   return path
-  //   myfi
-  // let fm = FileManager.iCloud()
-  // const filename = "image.jpg"
-  // const files = FileManager.local()
-  // const path = files.joinPath(files.documentsDirectory(), filename)
-  let fm = FileManager.iCloud()
-  let image = fm.readImage(fm.documentsDirectory() + "/image.jpg")
+
+  let image = fm.readImage(fm.documentsDirectory() + "/imgMedium.JPG")
   widget.backgroundImage = image
 
   // END Background 🖼️ image --------------//
+  let path;
+  if (fm.bookmarkExists("data.json")) {
+    path = fm.bookmarkedPath("data.json")
+  }
+  const data = JSON.parse(fm.readString(path));
 
-  //--------------------------------//
-  // top row 
-  /*--------------------------------
-  | DATE                      BATT |
-  --------------------------------*/
+  const datesAreOnSameDay = (first, second) =>
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate();
+
+
+  const things = data.things;
+  const glyphs = data.glyphs;
+  const count = 22;
+  const today = new Date();
+
   let row = stack.addStack()
-  if (typeof calendar !== 'undefined') {
-    const dateText = row.addText(await calendar.date())
-    dateText.font = Font.mediumSystemFont(SIZE.sm)
-    dateText.textColor = new Color(COLOR.grey)
-  }
-  row.addSpacer()
-  if (typeof battery !== 'undefined') {
-    const batteryText = row.addText(battery())
-    batteryText.font = Font.mediumSystemFont(SIZE.sm)
-    batteryText.textColor = new Color(COLOR.grey)
-    batteryText.rightAlignText()
-  }
-  // END top bar  --------------//
-  //--------------------------------//
-  // Calendar row
-  /*--------------------------------
-  | CAL 1                    CAL 3 |
-  | CAL 1                    CAL 3 |
-  --------------------------------*/
-  if (typeof calendar !== 'undefined') {
-    let calendarItems = await calendar.items()
-    calendarItems = calendarItems.slice(0, 4)
-    calendarItems.forEach((item, index, array) => {
-      // Add a new row every two items
-      if (index % 2 === 0) {
-        row = stack.addStack()
-        row.url = "calshow://"
+
+  things.forEach(item => {
+    let current = 0;
+    let streak = 0;
+    let total = 0;
+    row = stack.addStack() // Add thing label 
+    let thingText = row.addText(item)
+    thingText.font = Font.mediumSystemFont(SIZE.md)
+    thingText.textColor = new Color(COLOR.grey)
+
+    // Get glyph logic
+    row = stack.addStack()
+    const filter = data.entries.filter(entry => entry.type === item);
+    let previousDayCount = 1;
+    let progress
+    let text = []
+
+    function calibrating(array) {
+      for (const [index, m] of array.entries()) {
+        if (m === glyphs[2]) break;
+        if (m === glyphs[3]) array[index] = glyphs[0]
       }
-      const calStack = row.addStack()
-      calStack.layoutVertically();
+    }
 
-      const title = calStack.addStack()
-      // title.layoutVertically();
-
-      const colorBar = title.addText('❙ ')
-      colorBar.textColor = new Color(`#${item.hex}`)
-
-      title.addText(truncateString(item.title, 14))
-
-      const time = calStack.addText(item.time)
-      time.font = Font.mediumSystemFont(SIZE.sm)
-      time.textColor = new Color(COLOR.grey)
-      row.addStack(calStack)
-
-      if (index % 2 === 0) {
-        row.addSpacer()
-      }
+    // First of check if today has entry before looping
+    const checkToday = filter.some(found => {
+      return datesAreOnSameDay(new Date(found.date), today);
     })
-  }
-  // END Calendar row  --------------//
+    text.push(checkToday ? glyphs[2] : glyphs[1])
+
+    function logic(data) {      // Check if the dayBefore is in data
+      const check = filter.some(found => {
+        const dayBefore = new Date(new Date().setDate(today.getDate() - previousDayCount));
+        return datesAreOnSameDay(new Date(found.date), dayBefore);
+      })
+      if (check) {
+        total++;
+        streak++;
+        current++;
+        return text.push(glyphs[2])
+      }
+      // Todo: Check if there is no more data glyphs[0]
+      //       if (filter.length < count - previousDayCount) return text.push(glyphs[0])
+      // Otherwise glyph failed
+      text.push(glyphs[3])
+
+    }
+
+    for (let i = 0; i < count; i++) {
+      logic()
+      previousDayCount++;
+    }
+
+    // Check if the last glyphs are red
+    text.reverse()
+    calibrating(text)
+    row = stack.addStack() // Add thing label 
+    // Add thing progress to row
+    progress = row.addText(text.join(''))
+    progress.font = Font.mediumSystemFont(SIZE.sm)
+    //     progress.textColor = new Color(COLOR.grey)
+  })
+
+  // END top bar  --------------//
   stack.addSpacer()
 
   return widget

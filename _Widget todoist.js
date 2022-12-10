@@ -20,6 +20,6 @@ module.exports = async () => {
   const items = result
     .filter(item => !item.parent) // filter only top level items
     .map(item => `${item.content}`)
-
+console.log(items)
   return items;
 }
