@@ -43,7 +43,7 @@ async function createWidget() {
       widget.backgroundImage = fm.readImage(path)
     }
   }
-
+console.log(fm.documentsDirectory())
   let image = fm.readImage(fm.documentsDirectory() + "/imgMedium.JPG")
   widget.backgroundImage = image
 
@@ -71,10 +71,10 @@ async function createWidget() {
     let current = 0;
     let streak = 0;
     let total = 0;
-    row = stack.addStack() // Add thing label 
-    let thingText = row.addText(item)
-    thingText.font = Font.mediumSystemFont(SIZE.md)
-    thingText.textColor = new Color(COLOR.grey)
+    // row = stack.addStack() // Add thing label 
+    // let thingText = row.addText(item)
+    // thingText.font = Font.mediumSystemFont(SIZE.md)
+    // thingText.textColor = new Color(COLOR.grey)
 
     // Get glyph logic
     row = stack.addStack()
@@ -111,7 +111,8 @@ async function createWidget() {
       //       if (filter.length < count - previousDayCount) return text.push(glyphs[0])
       // Otherwise glyph failed
       text.push(glyphs[3])
-
+      if (current > streak) streak = current;
+      current = 0;
     }
 
     for (let i = 0; i < count; i++) {
@@ -124,9 +125,15 @@ async function createWidget() {
     calibrating(text)
     row = stack.addStack() // Add thing label 
     // Add thing progress to row
+
     progress = row.addText(text.join(''))
     progress.font = Font.mediumSystemFont(SIZE.sm)
     //     progress.textColor = new Color(COLOR.grey)
+
+    row = stack.addStack() // Add thing label 
+    let thingText2 = row.addText(`${item} ${streak} ${current} ${total}`)
+    thingText2.font = Font.mediumSystemFont(SIZE.md)
+    thingText2.textColor = new Color(COLOR.grey)
   })
 
   // END top bar  --------------//

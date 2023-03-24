@@ -5,7 +5,7 @@
 // const battery = importModule('_Widget Battery')
 const calendar = importModule('_Widget Calendar')
 // const todoist = importModule('_Widget todoist')
-const weather = importModule('_Widget Weather')// 
+const weather = importModule('_Widget Weather')
 const mail = importModule('_Widget mail')
 const notion = importModule('_Widget notion')
 // const bgImage = importModule('_Widget bgImage')
@@ -70,8 +70,8 @@ async function createWidget() {
   // const path = files.joinPath(files.documentsDirectory(), filename)
   let fm = FileManager.iCloud()
   let image = fm.readImage(fm.documentsDirectory() + "/image.jpg")
-//   widget.backgroundImage = image
-widget.backgroundColor = new Color(COLOR.bgGrey)
+  //   widget.backgroundImage = image
+  widget.backgroundColor = new Color(COLOR.bgGrey)
 
   // END Background 🖼️ image --------------//
 
@@ -155,15 +155,22 @@ widget.backgroundColor = new Color(COLOR.bgGrey)
     }
   }
   row.addSpacer()
+
   if (typeof weather !== 'undefined') {
-    const weatherObj = await weather();
     const weatherStack = row.addStack();
     weatherStack.layoutVertically();
-    weatherStack.url = "https://www.buienradar.nl/nederland/neerslag/zoom/3uurs?lat=52.381&lon=4.637"
+    try {
+      const weatherObj = await weather();
 
-    weatherStack.addText(`${weatherObj.weather.icon} ${weatherObj.weather.temp} ${weatherObj.weather.rain}`)
-    weatherStack.addText(`${weatherObj.wind.direction} ${weatherObj.wind.speed}m/s ${weatherObj.wind.icon}`)
+      weatherStack.url = "https://www.buienradar.nl/nederland/neerslag/zoom/3uurs?lat=52.381&lon=4.637"
+
+      weatherStack.addText(`${weatherObj.weather.icon} ${weatherObj.weather.temp} ${weatherObj.weather.rain}`)
+      weatherStack.addText(`${weatherObj.wind.direction} ${weatherObj.wind.speed}m/s ${weatherObj.wind.icon}`)
+    } catch (error) {
+      weatherStack.addText('⚠️')
+    }
   }
+
   row.addSpacer()
   if (typeof mail !== 'undefined') {
     const mailText = row.addText(await mail())

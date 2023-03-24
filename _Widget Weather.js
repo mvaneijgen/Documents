@@ -9,8 +9,8 @@ module.exports = async () => {
   const apiKey = cfg.darksky.apiKey;
   const lang = 'en';
   const units = 'si';
-  const url =
-    `https://api.darksky.net/forecast/${apiKey}/${location.latitude},${location.longitude}?lang=${lang}&units=${units}&exclude=minutely,hourly`;
+  const url = `https://api.pirateweather.net/forecast/${apiKey}/${location.latitude},${location.longitude}?lang=${lang}&units=${units}&exclude=minutely,hourly`;
+  // `https://api.darksky.net/forecast/${apiKey}/${location.latitude},${location.longitude}?lang=${lang}&units=${units}&exclude=minutely,hourly`;
 
   let current;
   let fm = FileManager.iCloud()
@@ -37,7 +37,7 @@ module.exports = async () => {
 
   resp = resp.toRawString()
   resp = JSON.parse(resp);
-
+  console.warn(resp);
   current = resp.currently;
   const directionSections = 360 / logicJSON.direction.length; // Divide 360 degrees to the amount of directions
   if (current.windBearing) {
@@ -60,7 +60,7 @@ module.exports = async () => {
     }
   }
   obj.weather.temp = `${Math.round(current.temperature)}°`;
-  obj.weather.rain = `${current.precipProbability*100}%`;
+  obj.weather.rain = `${current.precipProbability * 100}%`;
 
   return obj;
 }
