@@ -7,7 +7,7 @@ module.exports = async () => {
   const token = cfg.todoist.token;
   const project_id = cfg.todoist.project_id;
   const url =
-    `https://api.todoist.com/rest/v1/tasks?project_id=${project_id}`;
+    `https://api.todoist.com/rest/v2/tasks?project_id=${project_id}`;
 
   let r = new Request(url)
   r.headers = { 'Authorization': 'Bearer ' + token };
@@ -16,10 +16,11 @@ module.exports = async () => {
 
   result = result.toRawString()
   result = JSON.parse(result);
+  console.log(result)
 
   const items = result
-    .filter(item => !item.parent) // filter only top level items
+    .filter(item => !item.parent_id) // filter only top level items
     .map(item => `${item.content}`)
-console.log(items)
+
   return items;
 }

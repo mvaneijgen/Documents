@@ -3,10 +3,10 @@
 // icon-color: blue; icon-glyph: grip-horizontal;
 // ? Comment out modules you don't want to use
 // const battery = importModule('_Widget Battery')
-const calendar = importModule('_Widget Calendar')
-// const todoist = importModule('_Widget todoist')
-const weather = importModule('_Widget Weather')
-const mail = importModule('_Widget mail')
+// const calendar = importModule('_Widget Calendar')// // 
+const todoist = importModule('_Widget todoist')
+const weather = importModule('_Widget Weather')// 
+// const mail = importModule('_Widget mail')
 const notion = importModule('_Widget notion')
 // const bgImage = importModule('_Widget bgImage')
 // Split 🧩 up widget output to seperate files
@@ -145,7 +145,7 @@ async function createWidget() {
     const todoStack = row.addStack()
     todoStack.layoutVertically();
     todoStack.url = "todoist://"
-    if (todoItems.length > 1) {
+    if (todoItems.length >= 1) {
       todoItems.forEach((item, index, array) => {
         todoStack.addText(`□ ${truncateString(item, 12)}`)
         row.addStack(todoStack)
@@ -219,7 +219,6 @@ async function createWidget() {
       nextText.textColor = new Color(COLOR.grey)
     })
   }
-  // END Notion row --------------//
   return widget
 }
-// END Create widget ------------//
+  

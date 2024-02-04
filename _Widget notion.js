@@ -12,7 +12,7 @@ module.exports = async () => {
       and: [
         { property: "Tags", multi_select: { contains: "🛠️ Create" } },
         { property: "Status", select: { does_not_equal: "✅ Done" } },
-      { property: "Status", select: { does_not_equal: "🕥Someday" } }
+      { property: "Status", select: { does_not_equal: "🕦 Someday" } }
 ]
     }
   }
@@ -28,7 +28,7 @@ module.exports = async () => {
   let result = await r.load();
   result = result.toRawString()
   result = JSON.parse(result);
-  console.log(result)
+//   console.log(result)
   let items = result.results
     .map(item => {
       const obj = {

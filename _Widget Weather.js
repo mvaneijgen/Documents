@@ -37,7 +37,6 @@ module.exports = async () => {
 
   resp = resp.toRawString()
   resp = JSON.parse(resp);
-  console.warn(resp);
   current = resp.currently;
   const directionSections = 360 / logicJSON.direction.length; // Divide 360 degrees to the amount of directions
   if (current.windBearing) {
@@ -59,8 +58,8 @@ module.exports = async () => {
       obj.wind.icon = value;
     }
   }
-  obj.weather.temp = `${Math.round(current.temperature)}°`;
-  obj.weather.rain = `${current.precipProbability * 100}%`;
+  obj.weather.temp = `${Math.round(current.apparentTemperature)}°`;
+  obj.weather.rain = `☔${Math.round(current.precipProbability) * 100}%`;
 
   return obj;
 }
