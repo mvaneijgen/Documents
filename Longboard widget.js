@@ -28,7 +28,7 @@ let currStatus = "📂";
 
 const widget = await createWidget()
 if (!config.runsInWidget) {
-  await widget.presentMedium()
+  await widget.presentSmall()
 }
 Script.setWidget(widget)
 Script.complete()
@@ -57,7 +57,7 @@ async function createWidget() {
   const distanceLeft = data.goal - resultDistances;
   // Weeks left 
 
-  const weeksLeft = Math.ceil((new Date(data.endDate) - new Date()) / 604800000);
+  const weeksLeft = Math.floor((new Date(data.endDate) - new Date()) / 604800000);
   const calcAvrage = Math.ceil(distanceLeft / weeksLeft);
   const stringStatus = `${Math.round(distanceLeft)}km`
 
@@ -85,10 +85,13 @@ async function createWidget() {
   row = stack.addStack()
   row.addText(stringStatus)
   row = stack.addStack()
-  const sub = row.addText(`${currStatus}${calcAvrage}km 🗓️ ${weeksLeft} weeks`);
+  let sub = row.addText(`${currStatus}${calcAvrage}km`);
   sub.font = Font.mediumSystemFont(SIZE.sm)
   sub.textColor = new Color(COLOR.grey)
-
+  row = stack.addStack()
+  sub = row.addText(`🗓️ ${weeksLeft} weeks`)
+  sub.font = Font.mediumSystemFont(SIZE.sm)
+  sub.textColor = new Color(COLOR.grey)
   return widget
 }
 // END Create widget ------------//
