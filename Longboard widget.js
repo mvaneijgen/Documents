@@ -38,10 +38,19 @@ Script.complete()
 async function createWidget() {
 
   let path;
+  let data;
   if (fm.bookmarkExists("Longboard data.json")) {
     path = fm.bookmarkedPath("Longboard data.json")
+    data = JSON.parse(fm.readString(path));
+  } else {
+    data = {
+      "entries": [
+        { "date": "2024-02-03T00:19:00+01:00", "distance": 16.988860387530892 },
+        { "date": "2024-02-09T16:54:00+01:00", "distance": 13.93490850368272 }],
+      "endDate": "2025-01-01T09:37:00+01:00", "goal": 1000
+    };
   }
-  let data = JSON.parse(fm.readString(path));
+
 
   const widget = new ListWidget()
   const stack = widget.addStack();
@@ -52,8 +61,9 @@ async function createWidget() {
 
   // Caclualate all distances 
   const resultDistances = data.entries.reduce((accumulator, item) => {
-    return accumulator += item.distance.toFixed(2);
-  }, 0)
+    return accumulator += item.distance;
+  }, 0).toFixed(2)
+  console.warn(resultDistances);
   const distanceLeft = data.goal - resultDistances;
   // Weeks left 
 
